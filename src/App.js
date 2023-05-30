@@ -15,20 +15,39 @@ function App() {
     const [error, toggleError] = useState(false);
 
     useEffect(() => {
+        const controller = new AbortController();
         async function fetchData() {
-            toggleError(false);
+            // bij unmount gebruik je deze dat alle requests worden gecanceld
             try {
-                const result = await axios.get(`https://api.openweathermap.org/data/2.5/weather?q=${location},nl&appid=${apiKey}&lang=nl`);
+                const result = await axios.get(`https://api.openweathermap.org/data/2.5/weather?q=${location},nl&appid=${apiKey}&lang=nl`, {
+                    // dit zorgt ervoor dat de signal van axios package gekoppeld wordt aan de controller signal
+                    signal: controller.signal
+                });
+
+                if (result.data){
+                    toggleError(false);
+                }
                 console.log(result.data);
                 setWeatherData(result.data);
             } catch (e) {
-                console.error(e);
-                toggleError(true);
+                if (axios.isCancel(e)){
+                    console.log("The axios request was cancelled")
+                }
+                else {
+                    console.error(e);
+                    toggleError(true);
+                }
+
+
             }
         }
 
         if (location) {
-            fetchData();
+            void fetchData();
+        }
+
+        return function cleanUp() {
+            controller.abort();
         }
 
     }, [location]);

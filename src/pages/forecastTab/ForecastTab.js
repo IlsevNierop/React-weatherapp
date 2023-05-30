@@ -20,8 +20,10 @@ function ForecastTab({coordinates}) {
             async function fetchForecasts() {
                 toggleLoading(true);
                 try {
-                    toggleError(false);
                     const response = await axios.get(`https://api.openweathermap.org/data/2.5/forecast?lat=${coordinates.lat}&lon=${coordinates.lon}&appid=${apiKey}&lang=nl`);
+                    if (response.data){
+                        toggleError(false);
+                    }
                     console.log(response.data);
                     const fiveDayForecast = response.data.list.filter((oneForecast) => {
                             return oneForecast.dt_txt.includes("12:00:00");
@@ -38,7 +40,7 @@ function ForecastTab({coordinates}) {
 
 
             if (coordinates) {
-                fetchForecasts();
+                void fetchForecasts();
             }
         },
         [coordinates]);
