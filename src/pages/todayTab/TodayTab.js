@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState, useContext} from 'react';
 import './TodayTab.css';
 import axios from "axios";
 import WeatherDetail from "../../components/weatherDetail/WeatherDetail";
@@ -9,6 +9,7 @@ function TodayTab({coordinates}) {
     const [error, toggleError] = useState(false);
     const [loading, toggleLoading] = useState(false);
     const [singleDayForecast, setSingleDayForecast] = useState({});
+
 
     useEffect(() => {
         async function fetchDataSingleDay() {

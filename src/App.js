@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState, useContext} from 'react';
 import './App.css';
 import SearchBar from './components/searchBar/SearchBar';
 import TabBarMenu from './components/tabBarMenu/TabBarMenu';
@@ -7,13 +7,14 @@ import axios from 'axios';
 import ForecastTab from "./pages/forecastTab/ForecastTab";
 import TodayTab from "./pages/todayTab/TodayTab";
 import {Routes, Route} from 'react-router-dom';
-import kelvinToCelsius from './helpers/kelvinToCelsius';
+import {TempContext} from "./context/TempContextProvider";
 
 function App() {
 
     const [weatherData, setWeatherData] = useState({});
     const [location, setLocation] = useState('');
     const [error, toggleError] = useState(false);
+    const { kelvinToMetric } = useContext(TempContext);
 
     useEffect(() => {
         const controller = new AbortController();
@@ -69,7 +70,7 @@ function App() {
                 <>
                     <h2>{weatherData.weather[0].description}</h2>
                     <h3>{weatherData.name}</h3>
-                    <h1>{kelvinToCelsius(weatherData.main.temp)}</h1>
+                    <h1>{kelvinToMetric(weatherData.main.temp)}</h1>
                 </>}
 
           </span>
