@@ -1,16 +1,11 @@
 import React, {useEffect, useState} from 'react';
 import './ForecastTab.css';
 import axios from "axios";
-
-const apiKey = '3a011396b9d37ba95c3afedc93ab5094';
+import kelvinToCelsius from "../../helpers/kelvinToCelsius";
+import createDateString from "../../helpers/createDateString";
 
 
 function ForecastTab({coordinates}) {
-
-    function getWeekDay(timeStamp) {
-        const day = new Date(timeStamp * 1000);
-        return day.toLocaleDateString('nl-NL', {weekday: 'long'});
-    }
 
     const [forecasts, setForecasts] = useState([]);
     const [error, toggleError] = useState(false);
@@ -20,16 +15,14 @@ function ForecastTab({coordinates}) {
             async function fetchForecasts() {
                 toggleLoading(true);
                 try {
-                    const response = await axios.get(`https://api.openweathermap.org/data/2.5/forecast?lat=${coordinates.lat}&lon=${coordinates.lon}&appid=${apiKey}&lang=nl`);
+                    const response = await axios.get(`https://api.openweathermap.org/data/2.5/forecast?lat=${coordinates.lat}&lon=${coordinates.lon}&appid=${process.env.REACT_APP_API_KEY}&lang=nl`);
                     if (response.data){
                         toggleError(false);
                     }
-                    console.log(response.data);
                     const fiveDayForecast = response.data.list.filter((oneForecast) => {
                             return oneForecast.dt_txt.includes("12:00:00");
                         }
                     );
-                    console.log(fiveDayForecast);
                     setForecasts(fiveDayForecast);
                 } catch (e) {
                     console.error(e);
@@ -59,12 +52,11 @@ function ForecastTab({coordinates}) {
                 return (
                     <article className="forecast-day" key={day.dt}>
                         <p className="day-description">
-                            {getWeekDay(day.dt)}
+                            {createDateString(day.dt)}
                         </p>
-
                         <section className="forecast-weather">
             <span>
-             {day.main.temp}&deg; C
+             {kelvinToCelsius(day.main.temp)}
             </span>
                             <span className="weather-description">
               {day.weather[0].description}
