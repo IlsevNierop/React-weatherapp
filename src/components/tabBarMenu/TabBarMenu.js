@@ -9,12 +9,12 @@ function TabBarMenu() {
     <nav className="tab-bar">
       <ul>
         <li>
-          <NavLink className={({ isActive }) => isActive && 'active'} to="/" >
+          <NavLink className={({ isActive }) => isActive? 'active' : 'none'} to="/" >
             Vandaag
           </NavLink>
         </li>
         <li>
-          <NavLink className={({ isActive }) => isActive && 'active'} to="/komende-week">
+          <NavLink className={({ isActive }) => isActive? 'active' : 'none'} to="/komende-week">
             Komende week
           </NavLink>
         </li>
